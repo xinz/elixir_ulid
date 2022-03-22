@@ -24,7 +24,7 @@ defmodule ULID do
 
   def decode(<<_encoded_timestamp::bytes-size(10), _random::bytes-size(16)>> = input) do
     with {:ok, <<timestamp::unsigned-size(48), random::binary>>} <-
-           CrockfordBase32.decode_to_binary(input) do
+           Base32.decode(input) do
       {:ok, timestamp, random}
     else
       _ ->
