@@ -9,8 +9,12 @@ defmodule ULIDTest do
   end
 
   test "ULID.generate/1 string by input integer" do
-    assert String.length(ULID.generate(1)) == 26
-    assert String.length(ULID.generate(1000)) == 26
+    ulid = ULID.generate(1)
+    assert String.length(ulid) == 26
+    assert String.starts_with?(ulid, "0000000001") == true
+    ulid = ULID.generate(1000)
+    assert String.starts_with?(ulid, "00000000Z8") == true
+    assert String.length(ulid) == 26
   end
 
   test "ULID.generate_binary/0 by default" do
@@ -55,15 +59,15 @@ defmodule ULIDTest do
     assert MapSet.new(data) |> MapSet.size() == cores
   end
 
-  test "ULID.decode/1 binary" do
+  test "ULID.decode_binary/1" do
     binary = ULID.generate_binary()
-    {:ok, timestamp, random_bytes} = ULID.decode(binary)
+    {:ok, timestamp, random_bytes} = ULID.decode_binary(binary)
     assert byte_size(random_bytes) == 10
     assert is_integer(timestamp) == true
 
     value = 256
     binary = ULID.generate_binary(value)
-    {:ok, timestamp, random_bytes} = ULID.decode(binary)
+    {:ok, timestamp, random_bytes} = ULID.decode_binary(binary)
     assert byte_size(random_bytes) == 10
     assert timestamp == value
 
@@ -84,5 +88,12 @@ defmodule ULIDTest do
     id = ULID.generate()
     {:ok, timestamp, _} = ULID.decode(id)
     assert timestamp >= start
+  end
+
+  test "ensure decode properly" do
+    ms = 1648112381919
+    id = ULID.generate(ms)
+    {:ok, timestamp, _} = ULID.decode(id)
+    assert timestamp == ms
   end
 end
