@@ -21,7 +21,7 @@ defmodule ULID.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:crockford_base32, "~> 0.2"}
+      {:crockford_base32, "~> 0.3"}
     ]
   end
 end

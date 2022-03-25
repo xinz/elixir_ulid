@@ -3,20 +3,15 @@ defmodule ULID do
   Documentation for `ULID`.
   """
 
-  defmodule TimestampBits do
+  defmodule Base32.Bits128 do
     use CrockfordBase32,
-      bits_size: 48,
+      bits_size: 128,
       type: :integer
-  end
-
-  defmodule RandomBits do
-    use CrockfordBase32,
-      bits_size: 80
   end
 
   def generate(timestamp \\ System.system_time(:millisecond))
       when is_integer(timestamp) and timestamp >= 0 do
-    TimestampBits.encode(timestamp) <> RandomBits.encode(random_bytes())
+    Base32.Bits128.encode(generate_binary(timestamp))
   end
 
   def generate_binary(timestamp \\ System.system_time(:millisecond))
@@ -28,16 +23,14 @@ defmodule ULID do
     {:ok, timestamp, random}
   end
 
-  def decode(<<encoded_timestamp::bytes-size(10), random::bytes-size(16)>>) do
-    with {:ok, timestamp} <- TimestampBits.decode(encoded_timestamp),
-         {:ok, random_bytes} <- RandomBits.decode(random) do
-      {:ok, timestamp, random_bytes}
-    else
+  def decode(<<_encoded_timestamp::bytes-size(10), _random::bytes-size(16)>> = input) do
+    case Base32.Bits128.decode_to_bitstring(input) do
+      {:ok, <<timestamp::unsigned-size(48), random::bitstring>>} ->
+        {:ok, timestamp, random}
       _ ->
         error_invalid_decoding()
     end
   end
-
   def decode(_), do: error_invalid_decoding()
 
   defp random_bytes() do

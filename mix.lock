@@ -1,3 +1,3 @@
 %{
-  "crockford_base32": {:hex, :crockford_base32, "0.2.1", "41f95822aa6f686d674e4b4c0cb68052d43f46370bc7809e48c1a933279c971d", [:mix], [], "hexpm", "2fe06171305cbfe628a021581ec583057014d8a05248c18d9b7db0586a1a3555"},
+  "crockford_base32": {:hex, :crockford_base32, "0.3.0", "50a6642afed98cf6e00a7198381fb927d7b3b4e723881ec99fdb2418f0e14866", [:mix], [], "hexpm", "fe1a3feed996066f60aef6a3164d65c299e680ded49a817eb6f56972d6f5ebd2"},
 }
